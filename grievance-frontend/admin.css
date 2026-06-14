@@ -1,0 +1,225 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background: #F5F5F5;
+    margin: 0;
+    padding: 0;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 240px;
+    height: 100vh;
+    background: #1B5E20;
+    color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+}
+
+.sidebar-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.sidebar-header h5 {
+    color: #FFFFFF;
+}
+
+.sidebar-header small {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.sidebar-nav {
+    flex: 1;
+    padding: 1rem 0;
+}
+
+.sidebar-nav .nav-link {
+    display: block;
+    padding: 0.75rem 1.5rem;
+    color: #FFFFFF;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.sidebar-nav .nav-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-nav .nav-link.active {
+    background: rgba(255, 255, 255, 0.2);
+    font-weight: 600;
+}
+
+.sidebar-footer {
+    padding: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Main Content */
+.main-content {
+    margin-left: 240px;
+    padding: 2rem;
+    min-height: 100vh;
+}
+
+/* Summary Cards */
+.summary-card {
+    border: none;
+    border-radius: 8px;
+    background: #FFFFFF;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.border-total {
+    border-left: 4px solid #1976D2 !important;
+}
+
+.border-pending {
+    border-left: 4px solid #D32F2F !important;
+}
+
+.border-inprogress {
+    border-left: 4px solid #FFA000 !important;
+}
+
+.border-resolved {
+    border-left: 4px solid #388E3C !important;
+}
+
+/* Status Badges */
+.badge-pending {
+    background: #D32F2F;
+    color: #FFFFFF;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+
+.badge-inprogress {
+    background: #FFA000;
+    color: #FFFFFF;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+
+.badge-resolved {
+    background: #388E3C;
+    color: #FFFFFF;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+
+.badge-unclassified {
+    background: #E65100;
+    color: #FFFFFF;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+
+/* Table */
+.table {
+    background: #FFFFFF;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table thead th {
+    background: #F5F5F5;
+    border-bottom: 2px solid #E0E0E0;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    color: #616161;
+}
+
+.table tbody td {
+    vertical-align: middle;
+    font-size: 14px;
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 8px;
+    background: #FFFFFF;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+/* Hotspot Row */
+.hotspot-row {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #F0F0F0;
+}
+
+.hotspot-row:last-child {
+    border-bottom: none;
+}
+
+.hotspot-rank {
+    width: 30px;
+    font-weight: 700;
+    color: #1B5E20;
+}
+
+.hotspot-name {
+    flex: 1;
+    font-size: 14px;
+}
+
+.hotspot-count {
+    width: 50px;
+    text-align: right;
+    font-weight: 600;
+    font-size: 14px;
+    margin-right: 12px;
+}
+
+.hotspot-bar {
+    width: 120px;
+    height: 8px;
+    background: #E8F5E9;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.hotspot-bar-fill {
+    height: 100%;
+    background: #1B5E20;
+    border-radius: 4px;
+}
+
+/* Buttons */
+.btn-success {
+    background: #1B5E20;
+    border-color: #1B5E20;
+}
+
+.btn-success:hover {
+    background: #145214;
+    border-color: #145214;
+}
+
+/* Print */
+@media print {
+    .sidebar,
+    .btn,
+    button,
+    canvas,
+    #hotspotsContainer,
+    .row.g-2.mb-3 {
+        display: none !important;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+    }
+}

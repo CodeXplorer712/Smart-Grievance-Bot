@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+python-multipart
+tensorflow
+keras
+numpy
+pillow
+transformers
+torch
+pyTelegramBotAPI
+pymongo
+python-dotenv
+httpx
+requests

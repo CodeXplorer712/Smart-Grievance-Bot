@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sanitation Panel — Grievance System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  <meta name="theme-color" content="#1B5E20">
+  <link rel="manifest" href="sanitation-manifest.json">
+  <link rel="stylesheet" href="sanitation.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="app-header">
+    <span class="header-title"><i class="bi bi-recycle header-icon"></i> Sanitation Panel</span>
+    <button class="btn-logout" id="logoutBtn" title="Logout">
+      <i class="bi bi-box-arrow-right"></i>
+    </button>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="app-main">
+
+    <!-- STATS ROW -->
+    <div class="stats-row">
+      <span class="stat-chip stat-total" id="statTotal"><i class="bi bi-collection"></i> Total: 0</span>
+      <span class="stat-chip stat-pending" id="statPending"><i class="bi bi-clock"></i> Pending: 0</span>
+      <span class="stat-chip stat-resolved" id="statResolved"><i class="bi bi-check-circle"></i> Resolved Today: 0</span>
+    </div>
+
+    <!-- TODAY TOGGLE -->
+    <div class="toggle-row">
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="todayToggle">
+        <label class="form-check-label" for="todayToggle"><i class="bi bi-calendar-day"></i> Today Only</label>
+      </div>
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="routeSortToggle">
+        <label class="form-check-label" for="routeSortToggle"><i class="bi bi-signpost-split"></i> Sort by Route</label>
+      </div>
+    </div>
+
+    <!-- COMPLAINT LIST -->
+    <div id="complaintsList"></div>
+
+    <!-- EMPTY STATE -->
+    <div id="emptyState" class="empty-state" style="display:none;">
+      <div class="empty-icon"><i class="bi bi-inbox"></i></div>
+      <p>No garbage complaints assigned yet.</p>
+    </div>
+
+  </main>
+
+  <!-- DETAIL VIEW -->
+  <div id="detailView" class="detail-view">
+    <div class="detail-header">
+      <button class="btn-back" id="detailBackBtn">
+        <i class="bi bi-arrow-left"></i>
+      </button>
+      <span class="detail-header-title">Complaint Details</span>
+    </div>
+    <div class="detail-body" id="detailBody"></div>
+  </div>
+
+  <!-- RESOLUTION MODAL -->
+  <div class="modal fade" id="resolutionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-bottom">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 class="modal-title"><i class="bi bi-cloud-upload"></i> Upload Resolution</h6>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="upload-zone" id="uploadZone">
+              <i class="bi bi-camera upload-zone-icon"></i>
+              <span class="upload-zone-text">Tap to take photo or choose file</span>
+              <input type="file" class="form-control" id="resolutionPhoto" accept="image/*" capture="environment" hidden>
+            </label>
+          </div>
+          <div class="mb-3" id="photoPreviewWrap" style="display:none;">
+            <img id="photoPreview" class="photo-preview" alt="Preview">
+          </div>
+          <div class="mb-3">
+            <label class="form-label modal-field-label"><i class="bi bi-chat-left-text"></i> Resolution Note</label>
+            <textarea class="form-control" id="resolutionNote" rows="3" placeholder="Add a note about the resolution..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer flex-column border-0 pt-0">
+          <button type="button" class="btn btn-primary w-100" id="resolveBtn"><i class="bi bi-check-circle"></i> Mark as Resolved</button>
+          <button type="button" class="btn btn-outline-secondary w-100 mt-2" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SESSION TIMEOUT ALERT -->
+  <div id="sessionAlert" class="session-alert" style="display:none;">
+    <i class="bi bi-exclamation-triangle"></i> Session expiring in 2 minutes
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="sanitation.js"></script>
+</body>
+</html>

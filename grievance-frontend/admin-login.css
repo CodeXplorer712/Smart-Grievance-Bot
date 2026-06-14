@@ -1,0 +1,48 @@
+body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #F5F5F5;
+    font-family: 'Inter', sans-serif;
+}
+
+.card {
+    max-width: 400px;
+    width: 100%;
+    background: #FFFFFF;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    padding: 2rem;
+    border: none;
+}
+
+.icon-circle {
+    width: 48px;
+    height: 48px;
+    background: #E8F5E9;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    font-size: 22px;
+}
+
+.btn-primary {
+    background: #1B5E20;
+    border: 1px solid #1B5E20;
+    color: #FFFFFF;
+}
+
+.btn-primary:hover {
+    background: #145214;
+    border-color: #145214;
+    color: #FFFFFF;
+}
+
+#errorMsg {
+    color: #D32F2F;
+    font-size: 14px;
+    margin-top: 8px;
+}
