@@ -2,20 +2,17 @@
 if (sessionStorage.getItem("admin_logged_in") !== "true") {
     window.location.href = "admin-login.html";
 }
-
 var API_URL = "http://127.0.0.1:8000";
 var allComplaints = [];
 var filteredComplaints = [];
 var categoryChart = null;
 var statusChart = null;
 var trendChart = null;
-
 // Session timeout
 var SESSION_TIMEOUT = 15 * 60 * 1000;
 var WARNING_TIME = 13 * 60 * 1000;
 var sessionTimer = null;
 var warningTimer = null;
-
 function resetSessionTimer() {
     clearTimeout(sessionTimer);
     clearTimeout(warningTimer);
@@ -27,17 +24,14 @@ function resetSessionTimer() {
         window.location.href = "admin-login.html";
     }, SESSION_TIMEOUT);
 }
-
 document.addEventListener("click", resetSessionTimer);
 document.addEventListener("keydown", resetSessionTimer);
 document.addEventListener("mousemove", resetSessionTimer);
 document.addEventListener("scroll", resetSessionTimer);
 resetSessionTimer();
-
 // Navigation
 var navLinks = document.querySelectorAll(".sidebar-nav .nav-link");
 var sections = document.querySelectorAll(".content-section");
-
 navLinks.forEach(function (link) {
     link.addEventListener("click", function (e) {
         e.preventDefault();
@@ -52,13 +46,11 @@ navLinks.forEach(function (link) {
         }
     });
 });
-
 // Logout
 document.getElementById("logoutBtn").addEventListener("click", function () {
     sessionStorage.removeItem("admin_logged_in");
     window.location.href = "admin-login.html";
 });
-
 // Fetch all complaints
 function fetchComplaints() {
     fetch(API_URL + "/complaints/all")
@@ -74,7 +66,6 @@ function fetchComplaints() {
             console.error("Failed to fetch complaints:", err);
         });
 }
-
 // Summary cards
 function updateSummary() {
     var total = allComplaints.length;
@@ -92,7 +83,6 @@ function updateSummary() {
     document.getElementById("inprogress-count").textContent = inprogress;
     document.getElementById("resolved-count").textContent = resolved;
 }
-
 // Recent table (last 5)
 function renderRecentTable() {
     var sorted = allComplaints.slice().sort(function (a, b) {
@@ -104,16 +94,24 @@ function renderRecentTable() {
     for (var i = 0; i < recent.length; i++) {
         var c = recent[i];
         var tr = document.createElement("tr");
+        var urgencyHtml = "";
+        if (c.status !== "Resolved") {
+            var days = daysPending(c.timestamp);
+            if (days > 5) {
+                urgencyHtml = ' <span class="badge-urgent"><i class="bi bi-exclamation-triangle"></i> Urgent</span>';
+            } else if (days > 3) {
+                urgencyHtml = ' <span class="badge-due"><i class="bi bi-clock-history"></i> Due</span>';
+            }
+        }
         tr.innerHTML =
             "<td>" + escapeHtml(c.grievance_code) + "</td>" +
             "<td>" + escapeHtml(c.category || "-") + "</td>" +
             "<td>" + escapeHtml(c.location || "-") + "</td>" +
-            "<td>" + statusBadge(c.status) + "</td>" +
+            "<td>" + statusBadge(c.status) + urgencyHtml + "</td>" +
             "<td>" + formatDate(c.timestamp) + "</td>";
         tbody.appendChild(tr);
     }
 }
-
 // Populate category filter
 function populateCategoryFilter() {
     var select = document.getElementById("categoryFilter");
@@ -131,7 +129,6 @@ function populateCategoryFilter() {
         select.appendChild(opt);
     }
 }
-
 // Filters
 function applyFilters() {
     var search = document.getElementById("searchInput").value.toLowerCase();
@@ -139,7 +136,6 @@ function applyFilters() {
     var status = document.getElementById("statusFilter").value;
     var dateFrom = document.getElementById("dateFrom").value;
     var dateTo = document.getElementById("dateTo").value;
-
     filteredComplaints = allComplaints.filter(function (c) {
         if (search) {
             var code = (c.grievance_code || "").toLowerCase();
@@ -147,7 +143,10 @@ function applyFilters() {
             if (code.indexOf(search) === -1 && phone.indexOf(search) === -1) return false;
         }
         if (category && c.category !== category) return false;
-        if (status && c.status !== status) return false;
+        if (status === "Urgent") {
+            if (c.status === "Resolved") return false;
+            if (daysPending(c.timestamp) <= 5) return false;
+        } else if (status && c.status !== status) return false;
         if (dateFrom) {
             var d = new Date(c.timestamp);
             if (d < new Date(dateFrom)) return false;
@@ -160,17 +159,14 @@ function applyFilters() {
         }
         return true;
     });
-
     document.getElementById("complaintsCount").textContent = "Showing " + filteredComplaints.length + " complaints";
     renderComplaintsTable();
 }
-
 document.getElementById("searchInput").addEventListener("input", applyFilters);
 document.getElementById("categoryFilter").addEventListener("change", applyFilters);
 document.getElementById("statusFilter").addEventListener("change", applyFilters);
 document.getElementById("dateFrom").addEventListener("change", applyFilters);
 document.getElementById("dateTo").addEventListener("change", applyFilters);
-
 // Complaints table
 function renderComplaintsTable() {
     var tbody = document.getElementById("complaintsTableBody");
@@ -181,18 +177,26 @@ function renderComplaintsTable() {
     for (var i = 0; i < sorted.length; i++) {
         var c = sorted[i];
         var tr = document.createElement("tr");
+        var urgencyHtml = "";
+        if (c.status !== "Resolved") {
+            var days = daysPending(c.timestamp);
+            if (days > 5) {
+                urgencyHtml = ' <span class="badge-urgent"><i class="bi bi-exclamation-triangle"></i> Urgent</span>';
+            } else if (days > 3) {
+                urgencyHtml = ' <span class="badge-due"><i class="bi bi-clock-history"></i> Due</span>';
+            }
+        }
         tr.innerHTML =
             "<td>" + escapeHtml(c.grievance_code) + "</td>" +
             "<td>" + escapeHtml(c.type || "-") + "</td>" +
             "<td>" + escapeHtml(c.category || "-") + "</td>" +
             "<td>" + escapeHtml(c.location || "-") + "</td>" +
-            "<td>" + statusBadge(c.status) + "</td>" +
+            "<td>" + statusBadge(c.status) + urgencyHtml + "</td>" +
             "<td>" + formatConfidence(c.confidence) + "</td>" +
             "<td>" + formatDate(c.timestamp) + "</td>" +
             '<td><button class="btn btn-sm btn-outline-success view-btn" data-code="' + escapeHtml(c.grievance_code) + '">View</button></td>';
         tbody.appendChild(tr);
     }
-
     // View buttons
     var viewBtns = document.querySelectorAll(".view-btn");
     viewBtns.forEach(function (btn) {
@@ -201,7 +205,6 @@ function renderComplaintsTable() {
         });
     });
 }
-
 // Detail modal
 function openDetailModal(code) {
     fetch(API_URL + '/complaint/track/' + code)
@@ -215,7 +218,6 @@ function openDetailModal(code) {
             console.log('Error fetching detail:', error);
         });
 }
-
 function populateModal(c) {
     document.getElementById("modalCode").textContent = c.grievance_code;
     document.getElementById("modalType").textContent = c.type || "-";
@@ -224,6 +226,17 @@ function populateModal(c) {
     document.getElementById("modalConfidence").textContent = formatConfidence(c.confidence);
     document.getElementById("modalDate").textContent = formatDate(c.timestamp);
     document.getElementById("modalPhone").textContent = c.citizen_phone || "-";
+
+    // Assigned Zone
+    document.getElementById("modalAssignedWorker").textContent = c.assigned_worker || "Not available";
+    // Resolved By
+    var resolvedByRow = document.getElementById("modalResolvedByRow");
+    if (c.status === "Resolved" && c.resolved_by) {
+        document.getElementById("modalResolvedBy").textContent = c.resolved_by;
+        resolvedByRow.style.display = "";
+    } else {
+        resolvedByRow.style.display = "none";
+    }
 
     // Category — if Unclassified show dropdown
     var catDiv = document.getElementById("modalCategory");
@@ -249,7 +262,6 @@ function populateModal(c) {
     } else {
         catDiv.textContent = c.category;
     }
-
     // Images
     var imgRow = document.getElementById("modalImageRow");
     if (c.image_base64) {
@@ -265,7 +277,6 @@ function populateModal(c) {
     } else {
         imgRow.style.display = "none";
     }
-
     var resImgRow = document.getElementById("modalResolutionImageRow");
     if (c.resolution_image) {
         var resSrc = c.resolution_image;
@@ -280,7 +291,6 @@ function populateModal(c) {
     } else {
         resImgRow.style.display = "none";
     }
-
     var resNoteRow = document.getElementById("modalResolutionNoteRow");
     if (c.resolution_note) {
         document.getElementById("modalResolutionNote").textContent = c.resolution_note;
@@ -289,7 +299,6 @@ function populateModal(c) {
         resNoteRow.style.display = "none";
     }
 }
-
 // Classify complaint
 function classifyComplaint(grievanceCode, category) {
     fetch(API_URL + "/complaint/classify", {
@@ -307,7 +316,6 @@ function classifyComplaint(grievanceCode, category) {
             console.error("Classify failed:", err);
         });
 }
-
 // Charts
 function buildCharts() {
     // Category pie
@@ -319,7 +327,6 @@ function buildCharts() {
     var catLabels = Object.keys(catCounts);
     var catData = catLabels.map(function (k) { return catCounts[k]; });
     var catColors = ["#1B5E20", "#388E3C", "#66BB6A", "#A5D6A7", "#C8E6C9", "#E8F5E9", "#FFA000", "#D32F2F"];
-
     if (categoryChart) categoryChart.destroy();
     categoryChart = new Chart(document.getElementById("categoryChart"), {
         type: "pie",
@@ -332,14 +339,12 @@ function buildCharts() {
         },
         options: { responsive: true, plugins: { legend: { position: "bottom", labels: { font: { size: 11 } } } } }
     });
-
     // Status bar
     var statusCounts = { "Pending": 0, "In Progress": 0, "Resolved": 0 };
     for (var j = 0; j < allComplaints.length; j++) {
         var s = allComplaints[j].status;
         if (statusCounts[s] !== undefined) statusCounts[s]++;
     }
-
     if (statusChart) statusChart.destroy();
     statusChart = new Chart(document.getElementById("statusChart"), {
         type: "bar",
@@ -353,7 +358,6 @@ function buildCharts() {
         },
         options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
     });
-
     // Trend line (last 7 days)
     var today = new Date();
     var trendLabels = [];
@@ -370,7 +374,6 @@ function buildCharts() {
         }
         trendData.push(count);
     }
-
     if (trendChart) trendChart.destroy();
     trendChart = new Chart(document.getElementById("trendChart"), {
         type: "line",
@@ -388,7 +391,6 @@ function buildCharts() {
         options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
     });
 }
-
 // Hotspots
 function buildHotspots() {
     var locCounts = {};
@@ -400,7 +402,6 @@ function buildHotspots() {
     entries.sort(function (a, b) { return b.count - a.count; });
     var top10 = entries.slice(0, 10);
     var maxCount = top10.length > 0 ? top10[0].count : 1;
-
     var container = document.getElementById("hotspotsContainer");
     container.innerHTML = "";
     for (var j = 0; j < top10.length; j++) {
@@ -414,12 +415,10 @@ function buildHotspots() {
             '<div class="hotspot-bar"><div class="hotspot-bar-fill" style="width:' + pct + '%"></div></div>';
         container.appendChild(row);
     }
-
     if (top10.length === 0) {
         container.innerHTML = '<p class="text-muted">No location data available.</p>';
     }
 }
-
 // Export Excel
 document.getElementById("exportBtn").addEventListener("click", function () {
     var data = filteredComplaints.map(function (c) {
@@ -444,26 +443,28 @@ document.getElementById("exportBtn").addEventListener("click", function () {
         ".xlsx";
     XLSX.writeFile(wb, filename);
 });
-
 // Print
 document.getElementById("printBtn").addEventListener("click", function () {
     window.print();
 });
-
 // Helpers
+function daysPending(timestamp) {
+    var now = new Date();
+    var created = new Date(timestamp);
+    var diffMs = now - created;
+    return Math.floor(diffMs / (1000 * 60 * 60 * 24));
+}
 function statusBadge(status) {
     if (status === "Pending") return '<span class="badge-pending">Pending</span>';
     if (status === "In Progress") return '<span class="badge-inprogress">In Progress</span>';
     if (status === "Resolved") return '<span class="badge-resolved">Resolved</span>';
     return '<span class="badge-unclassified">' + escapeHtml(status || "Unknown") + '</span>';
 }
-
 function formatConfidence(value) {
     if (!value && value !== 0) return 'N/A';
     var conf = value > 100 ? value / 100 : value;
     return conf.toFixed(2) + '%';
 }
-
 function formatDate(timestamp) {
     if (!timestamp) return '-';
     try {
@@ -478,13 +479,11 @@ function formatDate(timestamp) {
         return '-';
     }
 }
-
 function escapeHtml(str) {
     if (!str) return "";
     var div = document.createElement("div");
     div.appendChild(document.createTextNode(str));
     return div.innerHTML;
 }
-
 // Init
 fetchComplaints();

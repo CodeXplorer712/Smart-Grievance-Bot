@@ -123,6 +123,32 @@ body {
     font-size: 12px;
 }
 
+.badge-urgent {
+    background: #FFEBEE;
+    color: #C62828;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    margin-left: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.badge-due {
+    background: #FFF3E0;
+    color: #E65100;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    margin-left: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
 /* Table */
 .table {
     background: #FFFFFF;
@@ -210,6 +236,7 @@ body {
 
 /* Print */
 @media print {
+
     .sidebar,
     .btn,
     button,

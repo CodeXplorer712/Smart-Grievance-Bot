@@ -24,7 +24,7 @@ def reverse_geocode_sync(lat, lng):
     except Exception:
         return f"{lat}, {lng}"
 
-bot = telebot.TeleBot(os.environ["TELEGRAM_TOKEN"])
+bot = telebot.TeleBot(os.environ["TELEGRAM_TOKEN"], threaded=False)
 print("[OK] Telegram bot initialized")
 
 USER_STATES = {}

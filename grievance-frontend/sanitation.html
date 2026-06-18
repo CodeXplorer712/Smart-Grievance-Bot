@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +12,7 @@
   <link rel="manifest" href="sanitation-manifest.json">
   <link rel="stylesheet" href="sanitation.css">
 </head>
+
 <body>
 
   <!-- HEADER -->
@@ -28,7 +30,8 @@
     <div class="stats-row">
       <span class="stat-chip stat-total" id="statTotal"><i class="bi bi-collection"></i> Total: 0</span>
       <span class="stat-chip stat-pending" id="statPending"><i class="bi bi-clock"></i> Pending: 0</span>
-      <span class="stat-chip stat-resolved" id="statResolved"><i class="bi bi-check-circle"></i> Resolved Today: 0</span>
+      <span class="stat-chip stat-resolved" id="statResolved"><i class="bi bi-check-circle"></i> Resolved Today:
+        0</span>
     </div>
 
     <!-- TODAY TOGGLE -->
@@ -78,7 +81,8 @@
             <label class="upload-zone" id="uploadZone">
               <i class="bi bi-camera upload-zone-icon"></i>
               <span class="upload-zone-text">Tap to take photo or choose file</span>
-              <input type="file" class="form-control" id="resolutionPhoto" accept="image/*" capture="environment" hidden>
+              <input type="file" class="form-control" id="resolutionPhoto" accept="image/*" capture="environment"
+                hidden>
             </label>
           </div>
           <div class="mb-3" id="photoPreviewWrap" style="display:none;">
@@ -86,11 +90,13 @@
           </div>
           <div class="mb-3">
             <label class="form-label modal-field-label"><i class="bi bi-chat-left-text"></i> Resolution Note</label>
-            <textarea class="form-control" id="resolutionNote" rows="3" placeholder="Add a note about the resolution..."></textarea>
+            <textarea class="form-control" id="resolutionNote" rows="3"
+              placeholder="Add a note about the resolution..."></textarea>
           </div>
         </div>
         <div class="modal-footer flex-column border-0 pt-0">
-          <button type="button" class="btn btn-primary w-100" id="resolveBtn"><i class="bi bi-check-circle"></i> Mark as Resolved</button>
+          <button type="button" class="btn btn-primary w-100" id="resolveBtn"><i class="bi bi-check-circle"></i> Mark as
+            Resolved</button>
           <button type="button" class="btn btn-outline-secondary w-100 mt-2" data-bs-dismiss="modal">Cancel</button>
         </div>
       </div>
@@ -105,4 +111,5 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="sanitation.js"></script>
 </body>
+
 </html>

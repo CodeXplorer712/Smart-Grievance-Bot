@@ -31,6 +31,16 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
+}
+
+.header-subtitle {
+  display: block;
+  width: 100%;
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.75);
+  margin-top: -2px;
 }
 
 .header-icon {
@@ -400,9 +410,17 @@ body {
   margin-bottom: 10px;
 }
 
-.detail-status-badge.pending { background: #EF5350; }
-.detail-status-badge.in-progress { background: #FF9800; }
-.detail-status-badge.resolved { background: #4CAF50; }
+.detail-status-badge.pending {
+  background: #EF5350;
+}
+
+.detail-status-badge.in-progress {
+  background: #FF9800;
+}
+
+.detail-status-badge.resolved {
+  background: #4CAF50;
+}
 
 .detail-pending-days {
   display: inline-flex;

@@ -2,6 +2,7 @@ from fastapi import FastAPI, UploadFile, File, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import os
+import threading
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -22,10 +23,36 @@ from bot import bot, notify_resolution
 from utils import reverse_geocode
 
 
+def _start_bot_polling():
+    """Start bot polling with retry logic for network issues."""
+    import time
+    max_retries = 5
+    for attempt in range(max_retries):
+        try:
+            bot.remove_webhook()
+            break
+        except Exception as e:
+            wait = min(2 ** attempt, 30)
+            print(f"[WARN] remove_webhook failed (attempt {attempt + 1}/{max_retries}): {e}")
+            print(f"[WARN] Retrying in {wait}s...")
+            time.sleep(wait)
+    else:
+        print("[WARN] Could not remove webhook after retries, attempting polling anyway")
+
+    print("[OK] Starting Telegram bot polling...")
+    bot.infinity_polling(timeout=30, long_polling_timeout=30)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print("[OK] Telegram webhook mode active")
+    # Start polling in a background daemon thread
+    polling_thread = threading.Thread(target=_start_bot_polling, daemon=True)
+    polling_thread.start()
+    print("[OK] Telegram bot polling thread launched")
     yield
+    # Stop polling on shutdown
+    bot.stop_polling()
+    print("[OK] Telegram bot polling stopped")
 
 
 app = FastAPI(lifespan=lifespan)
